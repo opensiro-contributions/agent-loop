@@ -22,7 +22,10 @@ from dataclasses import dataclass
 
 from .memory import Memory
 
-_NUM_RE = re.compile(r"-?\d+(?:\.\d+)?")
+# Recognize a complete numeric claim, including scientific notation and
+# leading-decimal forms. Splitting 1e3 into 1 and 3 can incorrectly ground a
+# fabricated value in unrelated tool readings [1, 3].
+_NUM_RE = re.compile(r"(?<![\w.])[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?")
 # Tokens like pump-7, S7-1500, abc123: a run containing letters and digits/
 # hyphens. We blank these out before reading numbers so identifiers aren't
 # mistaken for numeric claims.
